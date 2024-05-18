@@ -82,4 +82,4 @@ $ python optimization.py
 # Single 43s
 ```
 
-By these results, it is obvious that Rust adds no lag for its results, and accelrates Python code significantly.
+By these results, it is obvious that Rust adds no lag for its results, and accelerates Python code significantly.

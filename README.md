@@ -77,7 +77,7 @@ $ cd rust_knapsack/
 $ ./rust_modules/target/release/stock_algo 
 # Single 1.02s, multi8 2.81s
 $ python rust_connect.py 
-# Single 1.03s, multi 2.75s
+# Single 1.03s, multi8 2.75s
 $ python optimization.py
 # Single 43s
 ```

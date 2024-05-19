@@ -79,4 +79,4 @@ By these results, it is obvious that Rust adds no lag for its results, and accel
 
 #### Compatibility
 
-As you'll notice in the file ./rust_modules/structs.rs, it is easy to create serializers to convert Rust objects into Python objects. This can also be observed when you run python rust_connect.py where you can see clearly that the result is represented as a list of dictionaries containing various data types within them. This compatibility was easy and fairly intuitive, which is not a negligible improvement in so far as "quality of life" is concerned. 
+As you'll notice in the file ./rust_modules/src/structs.rs, it is easy to create serializers to convert Rust objects into Python objects. This can also be observed when you run python rust_connect.py where you can see clearly that the result is represented as a list of dictionaries containing various data types within them. This compatibility was easy and fairly intuitive, which is not a negligible improvement in so far as "quality of life" is concerned. 

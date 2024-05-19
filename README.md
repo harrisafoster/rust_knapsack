@@ -2,8 +2,6 @@
 
 ## Goal
 
-Goal:
-
 Prove that Rust increases Python's speed significantly via Rust import
 
 ## Local Dev
@@ -12,7 +10,8 @@ Prove that Rust increases Python's speed significantly via Rust import
 
 - Python >= 3.12.3
 - Rust >= 1.78.0
-- Ubuntu 23 (Mantic Minotaur)
+- C/C++ build tools for your OS
+- Terminal access (ideally Bash)
 
 ### Installation
 ##### Clone the source directly from Github:
@@ -29,45 +28,39 @@ $ source ./.venv/bin/activate
 ```sh
 $ pip install -r requirements.txt
 ```
-##### Build/install rust module with:
+##### Build/install rust modules with:
 ```sh
 $ cd rust_knapsack/rust_modules/
 $ cargo build --release
-$ maturin build --release
+$ maturin develop --release
 ```
 
 ### Use
-#### To run the Python version simply use these commands (with .venv activated):
+#### To run the pure Python version simply run these commands (with .venv activated):
 ```sh
 $ cd rust_knapsack/
 $ python optimization.py
 ```
 
-#### To build the Rust executable and run it:
+#### To run the pure Rust version simply run these commands:
 ```sh
-$ cd rust_knapsack/rust_modules/
-$ cargo build --release
-$ cd ..
+$ cd rust_knapsack/
 $ ./rust_modules/target/release/stock_algo 
 ```
 
-#### To build the Rust Python package and run it:
+#### To run the Rust/Python hybrid version simply run these commands (with .venv activated):
 ```sh
-$ cd rust_knapsack/rust_modules/
-$ maturin develop --release
-$ cd ..
+$ cd rust_knapsack/
 $ python rust_connect.py
 ```
 
 ### Results
 
-As you can see, Rust can accelerate Python code with NO added lag from import. It is the best choice for modules associated with Python with the goal of performance acceleration.
-
 ### Metrics on my PC
 
 #### PC specs
-CPU: 12 cores @ 3.7ghz
-RAM: 16gb @ 16gb
+CPU: 12 cores @ 3.7ghz - AMD Ryzen 9
+RAM: 16gb DDR5
 SSD: 1tb
 
 #### Local Results
@@ -75,11 +68,15 @@ Local results yield:
 ```sh
 $ cd rust_knapsack/
 $ ./rust_modules/target/release/stock_algo 
-# Single 1.02s, multi8 2.81s
+# Single 1.02s, multi3 1.3s
 $ python rust_connect.py 
-# Single 1.03s, multi8 2.75s
+# Single 1.03s, multi3 1.26s
 $ python optimization.py
 # Single 43s
 ```
 
-By these results, it is obvious that Rust adds no lag for its results, and accelerates Python code significantly.
+By these results, it is obvious that Rust adds no lag for its results, and accelerates Python code significantly. In addition to that, multithreading is natively supported and accelerates the code even further.
+
+#### Compatibility
+
+As you'll notice in the file ./rust_modules/structs.rs, it is easy to create serializers to convert Rust objects into Python objects. This can also be observed when you run python rust_connect.py where you can see clearly that the result is represented as a list of dictionaries containing various data types within them. This compatibility was easy and fairly intuitive, which is not a negligible improvement in so far as "quality of life" is concerned. 

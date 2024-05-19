@@ -3,7 +3,6 @@ pub mod knapsack {
     use crate::structs::structs::Stock;
     use crate::tools::tools::float64_max;
     use crate::tools::tools::set_up_and_sort_data;
-    use crate::HashMap;
 
     fn check_all_combinations(
         combination_matrix: &mut Vec<Vec<f64>>,
@@ -38,7 +37,7 @@ pub mod knapsack {
         }
     }
 
-    pub fn run_algo(capacity: i64, filename: &str) -> HashMap<&'static str, f64> {
+    pub fn run_algo(capacity: i64, filename: &str) -> Vec<Stock> {
         let stocks: Vec<Stock> = set_up_and_sort_data(filename);
         let n_stocks: usize = stocks.len();
         let rmb: usize = (capacity * 100) as usize;
@@ -61,16 +60,6 @@ pub mod knapsack {
                 .partial_cmp(&a.profit)
                 .unwrap_or(std::cmp::Ordering::Equal)
         });
-        let mut total_spent: f64 = 0.0;
-        let mut total_earned: f64 = 0.0;
-        chosen_stocks.iter().for_each(|s: &Stock| {
-            total_spent += s.price;
-            total_earned += s.earnings
-        });
-        //println!("Chosen stocks: {:?}", chosen_stocks);
-        let mut return_val: HashMap<&str, f64> = HashMap::new();
-        return_val.insert("spent", total_spent);
-        return_val.insert("earned", total_earned);
-        return return_val;
+        return chosen_stocks;
     }
 }

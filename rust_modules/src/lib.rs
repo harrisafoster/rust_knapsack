@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::thread;
 use std::time::{Duration, Instant};
 pub mod structs;
@@ -6,40 +5,37 @@ pub mod reconstruction;
 pub mod tools;
 pub mod reader;
 use crate::algo::knapsack::run_algo;
+use crate::structs::structs::Stock;
 pub mod algo;
 use pyo3::prelude::*;
 
 #[pyfunction]
-fn knapsack_algo() -> HashMap<&'static str, f64> {
+fn knapsack_algo() -> Vec<Stock> {
     let now: Instant = Instant::now();
-    let mut res: HashMap<&str, f64> = run_algo(500, "data.csv");
-    let elapsed: Duration = now.elapsed();
-    res.insert("speed1", elapsed.as_secs_f64());
+    let res: Vec<Stock> = run_algo(500, "data.csv");
+    let elapsed_single: Duration = now.elapsed();
 
     let now_multi: Instant = Instant::now();
-    let mut handles: Vec<thread::JoinHandle<HashMap<&str, f64>>> = Vec::new();
+    let thr1: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, "data.csv"));
+    let thr2: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, "data.csv"));
+    let thr3: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, "data.csv"));
 
-    let res1: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res1);
-    let res2: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res2);
-    let res3: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res3);
-    let res4: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res4);
-    let res5: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res5);
-    let res6: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res6);
-    let res7: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res7);
-    let res8: thread::JoinHandle<HashMap<&str, f64>> = thread::spawn(|| run_algo(500, "data.csv"));
-    handles.push(res8);
-    for handle in handles.drain(..) {
-        handle.join().unwrap();
-    }
+    let res1: Vec<Stock> = thr1.join().unwrap();
+    let res2: Vec<Stock> = thr2.join().unwrap();
+    let res3: Vec<Stock> = thr3.join().unwrap();
     let elapsed_multi: Duration = now_multi.elapsed();
-    res.insert("speed8", elapsed_multi.as_secs_f64());
+    let mut total_spent: f64 = 0.0;
+    let mut total_earned: f64 = 0.0;
+    res.iter().for_each(|s: &Stock| {
+        total_spent += s.price;
+        total_earned += s.earnings;
+    });
+    assert!(res == res1);
+    assert!(res == res2);
+    assert!(res == res3);
+
+    println!("Elapsed 1: {:?}", elapsed_single);
+    println!("Elapsed 3: {:?}", elapsed_multi);
 
     res
 }

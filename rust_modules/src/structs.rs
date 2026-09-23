@@ -1,8 +1,7 @@
 pub mod structs {
-    use pyo3::prelude::*;
-    use std::collections::HashMap;
+    use pyo3::{ prelude::*, types::PyDict };
 
-    #[derive(Debug)]
+    #[derive(Debug, PartialEq)]
     pub struct Stock {
         pub name: String,
         pub price: f64,
@@ -10,23 +9,16 @@ pub mod structs {
         pub earnings: f64,
     }
 
-    impl PartialEq for Stock {
-        fn eq(&self, other: &Self) -> bool {
-            self.name == other.name 
-            && self.price == other.price 
-            && self.profit == other.profit 
-            && self.earnings == other.earnings
-        }
-    }
+    impl Stock {
+        pub fn into_python(self, py: Python<'_>) -> PyResult<Py<PyDict>> {
+            let serialized_object = PyDict::new(py);
 
-    impl IntoPy<PyObject> for Stock {
-        fn into_py(self, py: Python<'_>) -> PyObject {
-            let mut serialized_object: HashMap<&str, Py<PyAny>> = HashMap::new();
-            serialized_object.insert("name", self.name.into_py(py));
-            serialized_object.insert("price", self.price.into_py(py));
-            serialized_object.insert("profit", self.profit.into_py(py));
-            serialized_object.insert("earnings", self.earnings.into_py(py));
-            serialized_object.into_py(py)
+            serialized_object.set_item("name", self.name)?;
+            serialized_object.set_item("price", self.price)?;
+            serialized_object.set_item("profit", self.profit)?;
+            serialized_object.set_item("earnings", self.earnings)?;
+
+            Ok(serialized_object.unbind())
         }
     }
 }

@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 import time
 
@@ -110,10 +111,20 @@ class Optimization:
         return self.number_of_calculations, sum(prices), sum(amounts_earned), final_items
 
 
+def resource_path(filename: str) -> Path:
+    """
+    Return the path to an embedded application resource.
+    :param filename: Name of the embedded resource.
+    :return: Absolute path to the extracted resource.
+    """
+    return Path(__file__).resolve().parent / filename
+
 if __name__ == "__main__":
-    start = time.time()
-    data_to_be_analyzed = Optimization("data.csv")
-    print("Format: number_of_calculations, total_spent, total_earned, stocks_to_buy", '\n',
-          data_to_be_analyzed.determine_optimal_investments(data_to_be_analyzed.add_profit_column())) 
-    end = time.time()
-    print(f"Calc duration: {end - start} seconds")
+    start = time.perf_counter()
+    data_to_be_analyzed = Optimization(resource_path("data.csv"))
+    result = data_to_be_analyzed.determine_optimal_investments(data_to_be_analyzed.add_profit_column())
+    duration = time.perf_counter() - start
+    print("Format: number_of_calculations, total_spent, total_earned, stocks_to_buy")
+    print(result)
+    print(f"Calc duration: {duration:.6f} seconds")
+    input("\nPress Enter to close...")

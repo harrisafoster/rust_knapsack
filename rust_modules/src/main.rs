@@ -1,24 +1,27 @@
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::{ Duration, Instant };
 pub mod reader;
 pub mod reconstruction;
 pub mod structs;
 pub mod tools;
+pub mod algo;
+pub mod embedded_data;
+
 use crate::algo::knapsack::run_algo;
 use crate::structs::structs::Stock;
-pub mod algo;
+use crate::embedded_data::STOCK_DATA;
 
 fn main() {
     let now_single: Instant = Instant::now();
-    let res: Vec<Stock> = run_algo(500, "data.csv");
+    let res: Vec<Stock> = run_algo(500, STOCK_DATA);
     let elapsed_single: Duration = now_single.elapsed();
     println!("Elapsed single: {:.2?}", elapsed_single);
 
     let now_multi: Instant = Instant::now();
 
-    let thr1: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, "data.csv"));
-    let thr2: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, "data.csv"));
-    let thr3: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, "data.csv"));
+    let thr1: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, STOCK_DATA));
+    let thr2: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, STOCK_DATA));
+    let thr3: thread::JoinHandle<Vec<Stock>> = thread::spawn(|| run_algo(500, STOCK_DATA));
 
     let res1: Vec<Stock> = thr1.join().unwrap();
     let res2: Vec<Stock> = thr2.join().unwrap();
